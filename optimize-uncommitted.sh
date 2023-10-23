@@ -6,8 +6,12 @@ then
   exit 1
 fi
 
+SAVEIFS=$IFS
+IFS=$'\n'
 for file in $(git status -s | grep -E '^[^D]{2}' | cut -c4- | grep -E "(.png|.jpg|.webp|.jpeg)")
 do
+  file=${file//\"/}
+
   response=$(curl -sS  https://api.tinify.com/shrink \
      --user api:$TNF_API_KEY \
      --data-binary @$file)
@@ -27,3 +31,4 @@ do
     --user api:$TNF_API_KEY \
     --output $file;
 done;
+IFS=$SAVEIFS
